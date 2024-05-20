@@ -1,0 +1,34 @@
+Name: Basilan
+SchemaVersion: "1.0"
+# Optional - Set automatic triggers.
+Triggers:
+ - Type: Push
+ Branches:
+ - main
+# Required - Define action configurations.
+Actions:
+ Scan:
+ Identifier: aws/build@v1
+ Inputs:
+ Sources:
+ - WorkflowSource
+ Variables:
+ - Name: BASILAN_DOWNLOAD_URL
+ Value: https://cli.zeta-iad.basilan.gss.aws.dev/basilan-cli/0.4.20
+ - Name: CLI_VER
+ Value: basilan-cli_Linux_x86_64.tar.gz
+ - Name: BASILAN_PROFILE
+ Value: workshop-demo
+ - Name: AWS_DEFAULT_REGION
+ Value: us-east-1
+ Configuration:
+ Steps:
+ - Run: sudo yum -y update
+ - Run: sudo yum -y install awscli
+ - Run: curl $BASILAN_DOWNLOAD_URL/$CLI_VER --output - | tar -zx -C /usr/local/bin basilan
+ - Run: basilan scan -p $BASILAN_PROFILE --region us-east-1 --runner remote --publish
+ Environment:
+ Name: dev
+ Connections:
+ - Name: <your connection name>
+ Role: <Your CodeCatalyst connection IAM role>
