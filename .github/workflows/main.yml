@@ -9,6 +9,7 @@ jobs:
     CLI_VER: basilan-cli_Linux_x86_64.tar.gz
     BASILAN_PROFILE: workshop-demo
     AWS_DEFAULT_REGION: us-east-1
+
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
