@@ -4,8 +4,13 @@ permissions:
   id-token: write   # This is required for requesting the JWT
   contents: read    # This is required for actions/checkout
 jobs:
-  AssumeRoleAndCallIdentity:
+  AssumeRoleAndCallIdentityAndScan:
     runs-on: ubuntu-latest
+    env:
+      BASILAN_DOWNLOAD_URL: https://cli.zeta-iad.basilan.gss.aws.dev/basilan-cli/0.4.20
+      CLI_VER: basilan-cli_Linux_x86_64.tar.gz
+      BASILAN_PROFILE: workshop-demo
+      AWS_DEFAULT_REGION: us-east-1
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
@@ -19,16 +24,6 @@ jobs:
       - name: Sts GetCallerIdentity
         run: |
           aws sts get-caller-identity
-  scan:
-    runs-on: ubuntu-latest
-    env:
-      BASILAN_DOWNLOAD_URL: https://cli.zeta-iad.basilan.gss.aws.dev/basilan-cli/0.4.20
-      CLI_VER: basilan-cli_Linux_x86_64.tar.gz
-      BASILAN_PROFILE: workshop-demo
-      AWS_DEFAULT_REGION: us-east-1
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Install AWS CLI
         run: |
           sudo apt-get update
