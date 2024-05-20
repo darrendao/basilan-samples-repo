@@ -2,6 +2,21 @@ name: Basilan Actions demo
 on: [push, pull_request]
 permissions: read-all
 jobs:
+  AssumeRoleAndCallIdentity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::315593094134:role/GitHubAction-AssumeRoleWithAction #change to reflect your IAM role’s ARN
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: us-east-1
+      # Hello from AWS: WhoAmI
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
   scan:
     runs-on: ubuntu-latest
     env:
