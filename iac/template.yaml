@@ -1,6 +1,66 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Resources:
- SampleS3Bucket:
-   Type: AWS::S3::Bucket
-   Properties:
-     BucketName: !Sub '${AWS::Region}-${AWS::AccountId}-pdp-workshop-example-bucket-cf'
+  GoodServerlessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Sub agi-intuit-public-artifacts-${AGIAccountID}-${AWS::Region}
+        Key: agi/ecr-copy/latest/main.zip
+      FunctionName: !Sub pe-ecr-copy-${EnvironmentName}
+      Handler: main
+      Runtime: go1.x
+      Timeout: 900
+      VpcConfig:
+        SubnetIds: !Split
+          - ","
+          - Fn::ImportValue: !Sub ${VpcID}:private-subnet:ids
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+  GoodLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      CodeUri:
+        Bucket: !Sub agi-intuit-public-artifacts-${AGIAccountID}-${AWS::Region}
+        Key: agi/ecr-copy/latest/main.zip
+      FunctionName: !Sub pe-ecr-copy-${EnvironmentName}
+      Handler: main
+      Runtime: go1.x
+      Timeout: 900
+      VpcConfig:
+        SubnetIds: !Split
+          - ","
+          - Fn::ImportValue: !Sub ${VpcID}:private-subnet:ids
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+  PublicServerlessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Sub agi-intuit-public-artifacts-${AGIAccountID}-${AWS::Region}
+        Key: agi/ecr-copy/latest/main.zip
+      FunctionName: !Sub pe-ecr-copy-${EnvironmentName}
+      Handler: main
+      Runtime: go1.x
+      Timeout: 900
+  PublicLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      CodeUri:
+        Bucket: !Sub agi-intuit-public-artifacts-${AGIAccountID}-${AWS::Region}
+        Key: agi/ecr-copy/latest/main.zip
+      FunctionName: !Sub pe-ecr-copy-${EnvironmentName}
+      Handler: main
+      Runtime: go1.x
+      Timeout: 900
+  FuncPerm1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PublicServerlessFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
+  FuncPerm2:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PublicLambdaFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
