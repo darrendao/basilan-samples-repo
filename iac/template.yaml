@@ -64,4 +64,3 @@ Resources:
       FunctionName: !Ref PublicLambdaFunction
       Action: lambda:InvokeFunction
       Principal: "*"
-
